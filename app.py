@@ -1,7 +1,7 @@
 import streamlit as st
 from dotenv import load_dotenv
 import google.generativeai as genai # type: ignore
-from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled # type: ignore
 import os
 
 load_dotenv()
@@ -30,8 +30,12 @@ def extract_transcript_details(youtube_video_url):
             transcript+= " " + i["text"]
             
         return transcript
+    except TranscriptsDisabled:
+        st.error("Transcripts are disabled for this video. Please try another video.")
+        return None
     except Exception as e:
-        raise e
+        st.error(f"An error occurred: {str(e)}")
+        return None
     
     
 # streamlit app
